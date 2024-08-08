@@ -15,7 +15,6 @@ spring:
       ddl-auto: update
     show-sql: true
 
-
 app:
   name: My Application
   version: 1.0.0

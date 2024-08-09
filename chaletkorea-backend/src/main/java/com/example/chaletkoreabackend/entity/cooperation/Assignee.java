@@ -4,6 +4,8 @@ import com.example.chaletkoreabackend.entity.employee.Employee;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -23,4 +25,6 @@ public class Assignee {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private Employee employee;
+
+    private LocalDateTime createdAt;
 }

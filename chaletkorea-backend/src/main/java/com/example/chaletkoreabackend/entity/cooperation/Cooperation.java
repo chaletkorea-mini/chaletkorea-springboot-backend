@@ -29,21 +29,12 @@ public class Cooperation {
 
     private String title;
     private LocalDateTime desiredCompletionDate;
-    private LocalDateTime holdDate;
 
     @Enumerated(EnumType.STRING)
     private Status status;
-
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private String attachment;
-    private String assignee;
-    private String cc;
-    private String assigneeDept;
-    private Long assigneeDeptCnt;
-    private String ccDept;
-    private Long ccDeptCnt;
 
     @OneToMany(mappedBy = "cooperation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReadStatus> readStatuses = new ArrayList<>();
@@ -60,4 +51,9 @@ public class Cooperation {
     @OneToMany(mappedBy = "cooperation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "cooperation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AssigneeDept> assigneeDepts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cooperation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CcDept> ccDepts = new ArrayList<>();
 }

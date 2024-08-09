@@ -1,6 +1,7 @@
 package com.example.chaletkoreabackend.entity.cooperation;
 
 import com.example.chaletkoreabackend.entity.Attachment;
+import com.example.chaletkoreabackend.entity.HoldDeadline;
 import com.example.chaletkoreabackend.entity.Notification;
 import com.example.chaletkoreabackend.entity.employee.Employee;
 import jakarta.persistence.*;
@@ -56,4 +57,7 @@ public class Cooperation {
 
     @OneToMany(mappedBy = "cooperation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CcDept> ccDepts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cooperation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<HoldDeadline> holdDeadlines = new ArrayList<>();
 }

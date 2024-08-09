@@ -1,5 +1,6 @@
 package com.example.chaletkoreabackend.dto.cooperation;
 
+import com.example.chaletkoreabackend.entity.cooperation.Status;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -24,9 +25,13 @@ public class CooperationListDTO {
     private Long assigneeDeptCnt;
     private String ccDept;
     private Long ccDeptCnt;
-    private String status;
+
+    //클라이언트에서 enum 값을 잘 변환하여 사용해야함.
+    private Status status;
+
     private LocalDateTime desiredCompletionDate;
     private LocalDateTime holdDate;
     private LocalDateTime createdAt;
     private Long readCount;
+    private Boolean isRead;
 }

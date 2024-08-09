@@ -17,4 +17,13 @@ public enum Status {
         this.description = description;
     }
 
+    // description으로부터 Status를 찾는 메서드
+    public static Status fromDescription(String description) {
+        for (Status status : values()) {
+            if (status.getDescription().equalsIgnoreCase(description)) {
+                return status;
+            }
+        }
+        throw new IllegalArgumentException("No matching constant for [" + description + "]");
+    }
 }

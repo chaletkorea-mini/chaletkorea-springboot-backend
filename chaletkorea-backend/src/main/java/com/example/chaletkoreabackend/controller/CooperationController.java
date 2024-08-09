@@ -20,7 +20,11 @@ public class CooperationController {
     }
 
     @GetMapping
-    public Page<CooperationListDTO> getPagedCooperations(@RequestParam Long userId, Pageable pageable) {
-        return cooperationService.getPagedCooperationList(userId, pageable);
+    public Page<CooperationListDTO> getPagedCooperations(
+            @RequestParam Long userId,
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) String status,
+            Pageable pageable) {
+        return cooperationService.getPagedCooperationList(userId, searchTerm, status, pageable);
     }
 }

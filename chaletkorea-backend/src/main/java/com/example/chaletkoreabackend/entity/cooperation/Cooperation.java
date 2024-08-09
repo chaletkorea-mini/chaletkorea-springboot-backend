@@ -2,6 +2,7 @@ package com.example.chaletkoreabackend.entity.cooperation;
 
 import com.example.chaletkoreabackend.entity.Attachment;
 import com.example.chaletkoreabackend.entity.Notification;
+import com.example.chaletkoreabackend.entity.employee.Employee;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,19 +23,27 @@ public class Cooperation {
     @JoinColumn(name = "cooperation_id")
     private Long cooperationId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
     private String title;
     private LocalDateTime desiredCompletionDate;
-
-    @Column(name = "requesting_department")
-    private String requestingDepartment;
+    private LocalDateTime holdDate;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-
+    private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
+    private String attachment;
+    private String assignee;
+    private String cc;
+    private String assigneeDept;
+    private Long assigneeDeptCnt;
+    private String ccDept;
+    private Long ccDeptCnt;
 
     @OneToMany(mappedBy = "cooperation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReadStatus> readStatuses = new ArrayList<>();

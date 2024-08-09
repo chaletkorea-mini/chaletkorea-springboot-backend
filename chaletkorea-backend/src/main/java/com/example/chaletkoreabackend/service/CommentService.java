@@ -74,8 +74,8 @@ public class CommentService {
     private CommentDto convertToDto(Comment comment) {
         return CommentDto.builder()
                 .id(comment.getId())
-                .cooperationId(comment.getCooperation().getId())
-                .employeeId(comment.getEmployee().getId())
+                .cooperationId(comment.getCooperation().getCooperationId())
+                .employeeId(comment.getEmployee().getEmployeeId())
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())

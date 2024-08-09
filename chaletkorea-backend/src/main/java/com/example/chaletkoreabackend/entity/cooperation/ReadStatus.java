@@ -4,6 +4,8 @@ import com.example.chaletkoreabackend.entity.employee.Employee;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -24,7 +26,7 @@ public class ReadStatus {
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
-    @Column(name = "is_read")
-    private boolean isRead; // 조회 여부
+    private LocalDateTime firstRead;
+    private LocalDateTime finalRead;
 
 }

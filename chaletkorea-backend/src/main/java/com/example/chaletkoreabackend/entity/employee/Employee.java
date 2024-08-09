@@ -3,6 +3,7 @@ package com.example.chaletkoreabackend.entity.employee;
 import com.example.chaletkoreabackend.entity.Notification;
 import com.example.chaletkoreabackend.entity.cooperation.Assignee;
 import com.example.chaletkoreabackend.entity.cooperation.Cc;
+import com.example.chaletkoreabackend.entity.cooperation.Cooperation;
 import com.example.chaletkoreabackend.entity.cooperation.ReadStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,6 +39,9 @@ public class Employee {
     private String password;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cooperation> cooperationList = new ArrayList<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReadStatus> readStatuses = new ArrayList<>();

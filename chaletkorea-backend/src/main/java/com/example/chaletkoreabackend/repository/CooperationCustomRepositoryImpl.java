@@ -1,10 +1,8 @@
 package com.example.chaletkoreabackend.repository;
 
 import com.example.chaletkoreabackend.dto.cooperation.CooperationListDTO;
-import com.example.chaletkoreabackend.entity.cooperation.QAssignee;
-import com.example.chaletkoreabackend.entity.cooperation.QCc;
-import com.example.chaletkoreabackend.entity.cooperation.QCooperation;
-import com.example.chaletkoreabackend.entity.cooperation.QReadStatus;
+import com.example.chaletkoreabackend.entity.QAttachment;
+import com.example.chaletkoreabackend.entity.cooperation.*;
 import com.example.chaletkoreabackend.entity.employee.QEmployee;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
@@ -37,6 +35,10 @@ public class CooperationCustomRepositoryImpl implements CooperationCustomReposit
         QCc cc = QCc.cc;
         QReadStatus readStatus = QReadStatus.readStatus;
         QEmployee employee = QEmployee.employee;
+        QAttachment attachment = QAttachment.attachment;
+        QAssigneeDept assigneeDept = QAssigneeDept.assigneeDept; // AssigneeDept 엔티티 추가
+        QCcDept ccDept = QCcDept.ccDept; // CcDept 엔티티 추가
+
 
         // 서브쿼리 결과를 Expression으로 만듭니다.
         Expression<Long> readCountExpression = JPAExpressions
@@ -44,6 +46,46 @@ public class CooperationCustomRepositoryImpl implements CooperationCustomReposit
                 .from(readStatus)
                 .where(readStatus.cooperation.eq(cooperation)
                         .and(readStatus.firstRead.isNotNull()));
+
+        // 가장 먼저 생성된 첨부파일의 이름을 가져오기 위한 서브쿼리
+        Expression<String> firstAttachmentNameExpression = JPAExpressions
+                .select(attachment.filename)
+                .from(attachment)
+                .where(attachment.cooperation.eq(cooperation))
+                .orderBy(attachment.uploadDate.asc())
+                .limit(1);
+
+        // 가장 먼저 생성된 담당자의 이름을 가져오기 위한 서브쿼리
+        Expression<String> firstAssigneeNameExpression = JPAExpressions
+                .select(assignee.employee.name)
+                .from(assignee)
+                .where(assignee.cooperation.eq(cooperation))
+                .orderBy(assignee.createdAt.asc()) // Assignee의 생성일자로 정렬
+                .limit(1);
+
+        // 가장 먼저 생성된 담당 부서의 이름을 가져오기 위한 서브쿼리
+        Expression<String> firstAssigneeDeptNameExpression = JPAExpressions
+                .select(assigneeDept.department.departmentName)
+                .from(assigneeDept)
+                .where(assigneeDept.cooperation.eq(cooperation))
+                .orderBy(assigneeDept.createdAt.asc()) // AssigneeDept의 생성일자로 정렬
+                .limit(1);
+
+        // 가장 먼저 생성된 참조자의 이름을 가져오기 위한 서브쿼리
+        Expression<String> firstCcNameExpression = JPAExpressions
+                .select(cc.employee.name)
+                .from(cc)
+                .where(cc.cooperation.eq(cooperation))
+                .orderBy(cc.createdAt.asc()) // Cc의 생성일자로 정렬
+                .limit(1);
+
+        // 가장 먼저 생성된 참조 부서의 이름을 가져오기 위한 서브쿼리
+        Expression<String> firstCcDeptNameExpression = JPAExpressions
+                .select(ccDept.department.departmentName)
+                .from(ccDept)
+                .where(ccDept.cooperation.eq(cooperation))
+                .orderBy(ccDept.createdAt.asc()) // CcDept의 생성일자로 정렬
+                .limit(1);
 
         // 쿼리 생성 및 페이징 적용
         List<CooperationListDTO> results = queryFactory
@@ -53,19 +95,19 @@ public class CooperationCustomRepositoryImpl implements CooperationCustomReposit
                         cooperation.title,
                         employee.name,
                         employee.position,
-                        cooperation.attachment,
+                        firstAttachmentNameExpression,
                         // 동적으로 계산된 attachCnt
                         Expressions.asNumber(cooperation.attachments.size()).longValue(),
-                        assignee.employee.name,
+                        firstAssigneeNameExpression,
                         // 동적으로 계산된 assigneeCnt
                         Expressions.asNumber(cooperation.assignees.size()).longValue(),
-                        cc.employee.name,
+                        firstCcNameExpression,
                         // 동적으로 계산된 ccCnt
                         Expressions.asNumber(cooperation.ccList.size()).longValue(),
-                        cooperation.assigneeDept,
-                        cooperation.assigneeDeptCnt,
-                        cooperation.ccDept,
-                        cooperation.ccDeptCnt,
+                        firstAssigneeDeptNameExpression,
+                        Expressions.asNumber(cooperation.assigneeDepts.size()).longValue(),
+                        firstCcDeptNameExpression,
+                        Expressions.asNumber(cooperation.ccDepts.size()).longValue(),
                         cooperation.status,
                         cooperation.desiredCompletionDate,
                         cooperation.createdAt,
@@ -75,6 +117,8 @@ public class CooperationCustomRepositoryImpl implements CooperationCustomReposit
                 .leftJoin(cooperation.employee, employee)
                 .leftJoin(cooperation.assignees, assignee)
                 .leftJoin(cooperation.ccList, cc)
+                .leftJoin(cooperation.assigneeDepts, assigneeDept)
+                .leftJoin(cooperation.ccDepts, ccDept)
                 .where(employee.employeeId.eq(userId)
                         .and(assignee.cooperation.cooperationId.eq(cooperation.cooperationId)) // Assignee의 cooperationId 조건
                         .and(cc.cooperation.cooperationId.eq(cooperation.cooperationId))     // CC의 cooperationId 조건
@@ -89,6 +133,8 @@ public class CooperationCustomRepositoryImpl implements CooperationCustomReposit
                 .from(cooperation)
                 .leftJoin(cooperation.assignees, assignee)
                 .leftJoin(cooperation.ccList, cc)
+                .leftJoin(cooperation.assigneeDepts, assigneeDept)
+                .leftJoin(cooperation.ccDepts, ccDept)
                 .where(employee.employeeId.eq(userId)
                         .and(assignee.cooperation.cooperationId.eq(cooperation.cooperationId)) // Assignee의 cooperationId 조건
                         .and(cc.cooperation.cooperationId.eq(cooperation.cooperationId))     // CC의 cooperationId 조건

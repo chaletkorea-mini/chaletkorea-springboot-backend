@@ -3,7 +3,7 @@ package com.example.chaletkoreabackend.service;
 import com.example.chaletkoreabackend.dto.comment.CommentDto;
 import com.example.chaletkoreabackend.entity.comment.Comment;
 import com.example.chaletkoreabackend.repository.CommentRepository;
-import com.example.chaletkoreabackend.repository.CooperationRepository;
+import com.example.chaletkoreabackend.repository.cooperation.CooperationRepository;
 import com.example.chaletkoreabackend.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
